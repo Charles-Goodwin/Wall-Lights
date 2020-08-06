@@ -109,5 +109,5 @@ void waveFlag(char fileName[50], CRGBPalette16 palette) {
 
 void unionJack()
 {
-  waveFlag("/unionJack.csv", UnionJack_p);
+  waveFlag("/unionJack2.csv", UnionJack_p);
 }
