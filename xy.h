@@ -1,3 +1,5 @@
+#ifndef XY_H
+#define XY_H
 /*  
  *  The Neopixel matrix we are dealing with is somewhat irregular and
  *  so I have built this function to return the serial
@@ -40,7 +42,7 @@ int XY(uint8_t x, uint8_t y) {
  
   if (x >=19) { return -1;};
   if ((x>3) && (x<15)) { // handle short strips
-    if (y < (LEDNUM_LONG - LEDNUM_SHORT)) { s = -1;}  //// return -1 if out of bounds
+    if (y >= LEDNUM_LONG || y < (LEDNUM_LONG- LEDNUM_SHORT)) {s = -1;}  ////  if out of bounds
     else {
       if (x % 2 == 0) {   // handle even
         s = (LEDNUM_SHORT * x) + EVEN_DISP - y -1; // even
@@ -49,7 +51,7 @@ int XY(uint8_t x, uint8_t y) {
         s = (LEDNUM_SHORT * x) + ODD_DISP + y ; //odd
       }
     }
-  }
+  } 
   else {  // handle long strips
     if (y >= LEDNUM_LONG) {s = -1;}  // return -1 if out of bounds
     else {
@@ -66,6 +68,16 @@ int XY(uint8_t x, uint8_t y) {
     }
   }
   return s;
-
-
 }
+
+int XYwrap(int x, int y) {
+  if (x < 0) {x += NUM_TOTAL_STRIPS;}
+  else {if (x > NUM_TOTAL_STRIPS) {x -= NUM_TOTAL_STRIPS;}}
+  
+  if (y < 0) {y += NUM_LEDS_PER_LONG_STRIP;}
+  else {if (y > NUM_LEDS_PER_LONG_STRIP) {y -= NUM_LEDS_PER_LONG_STRIP;}}
+  
+  return XY(x,y);
+}
+
+#endif

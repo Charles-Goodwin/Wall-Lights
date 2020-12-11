@@ -163,8 +163,25 @@ int FetchColorsFromFile(char fileName[], uint8_t* strip) {
     if (file.available()) {
       result = csvReadText(&file, buf, sizeof(buf), ',');
       strip[i] = atoi(buf);
+      Serial.println(strip[i]);
     }
   }
    
   file.close();
+}
+
+void listAllFiles(){
+
+  File root = SPIFFS.open("/");
+ 
+  File file = root.openNextFile();
+ 
+  while(file){
+ 
+      Serial.print("FILE: ");
+      Serial.println(file.name());
+ 
+      file = root.openNextFile();
+  }
+ 
 }
