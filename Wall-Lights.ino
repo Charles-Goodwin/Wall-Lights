@@ -54,6 +54,12 @@ void loop(){
   EVERY_N_MILLISECONDS(1000) {
     ws.cleanupClients();
   } 
+
+  EVERY_N_MILLISECONDS(3000) {
+    Serial.println("Pattern and Pallete Index");
+    Serial.print(patternIndex);
+    Serial.println(paletteIndex);
+  } 
 }
 
 

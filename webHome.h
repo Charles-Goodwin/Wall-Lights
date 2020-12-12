@@ -52,7 +52,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 </head>
 <body>
   <div class="topnav">
-    <h1>Wall of Lights Controler</h1>
+    <h1>Wall of Lights Controller</h1>
   </div>
   <div class="content">
     <div class="card">
@@ -60,7 +60,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       <p><select style="width: 280px" id="pattern" name="pattern">
       %PATTERN_LIST%
       </select></p>
-    </div>
+    </div><br>
     <div class="card">
       <h2>Current Palette</h2> 
       <p><select style="width: 280px" id="palette" name="palette">
@@ -69,6 +69,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     </div>
   </div>
 <script>
+  
   var gateway = `ws://${window.location.hostname}/ws`;
   var websocket;
   window.addEventListener('load', onLoad);
@@ -87,7 +88,19 @@ const char index_html[] PROGMEM = R"rawliteral(
     setTimeout(initWebSocket, 2000);
   }
   function onMessage(event) {
-    document.getElementById('pattern').selectedIndex = event.data;
+    console.log('onMessage');
+    console.log(event.data);
+    var message = JSON.parse(event.data);
+    switch (message.key) {
+    case "pattern":
+      document.getElementById('pattern').selectedIndex = message.value;
+      break;
+    case "palette":  
+      document.getElementById('palette').selectedIndex = message.value;
+      break;
+    default:
+      console.log('Web Socket message key not recognised');
+    }
   }
   function onLoad(event) {
     initWebSocket();
@@ -96,14 +109,28 @@ const char index_html[] PROGMEM = R"rawliteral(
 
   function initSelect() {
     document.getElementById('pattern').addEventListener('change', selectPattern);
+    document.getElementById('palette').addEventListener('change', selectPalette);
   }
   
   function selectPattern(){
+    
+    var message = '{"key":"pattern", "value":' + document.getElementById('pattern').selectedIndex + '}';
     console.log('Sending Pattern Index');
     console.log(document.getElementById('pattern').selectedIndex);
-    var message = '{"patternIndex":"' + document.getElementById('pattern').selectedIndex + '"}';
     console.log(message);
     websocket.send(message);
+    document.getElementById('palette').selectedIndex = document.getElementById('pattern').selectedIndex;
+    
+  }
+
+    function selectPalette(){
+    
+    var message = '{"key":"palette", "value":' + document.getElementById('palette').selectedIndex + '}';
+    console.log('Sending Palette Index');
+    console.log(document.getElementById('palette').selectedIndex);
+    console.log(message);
+    websocket.send(message);
+    
   }
 
 </script>
@@ -111,8 +138,8 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
-void notifyClients() {
-  ws.textAll(String(patternIndex));
+void notifyClients(String message) {
+  ws.textAll(message);
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
@@ -121,14 +148,24 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0; 
     String message = (char*)data;
-    Serial.print("Jason Message: ");
+    Serial.print("Json Message: ");
     Serial.println(message);
     DeserializationError error = deserializeJson(doc, message);
-    patternIndex = (int)doc["patternIndex"];
-    Serial.print("patternIndex: ");
-    Serial.println(patternIndex);
     
-    notifyClients();
+    if (doc["key"] = "pattern"){
+      patternIndex = (int)doc["value"];
+      Serial.print("patternIndex: ");
+      Serial.println(patternIndex);
+      String message = "{key:\"pattern\", value:" + (String)patternIndex + "}";
+    }
+    if (doc["key"] = "palette"){
+      paletteIndex = (int)doc["value"];
+      Serial.print("paletteIndex: ");
+      Serial.println(paletteIndex);
+      String message = "{key:\"palette\", value:" + (String)patternIndex + "}";
+    }
+    
+    notifyClients(message);
   }
 }
 
@@ -168,6 +205,18 @@ String processor(const String& var){
       }
       list += ">" + patterns[i].name + "</option>";
     }
+    return list;
+  }
+  if (var=="PALETTE_LIST") {
+    String list = "";
+    for (int i =0; i < MAX_PALETTES; i++){
+      list += "<option value='" + (String)i + "' ";
+      if (i == paletteIndex){
+        list += "selected";
+      }
+      list += ">" + palettes[i].name + "</option>";
+    }
+    Serial.println(list);
     return list;
   }    
 }

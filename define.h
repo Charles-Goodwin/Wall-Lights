@@ -28,12 +28,14 @@
 #define SYMBOL_COLOUR  Red
 #define BACK_COLOUR  Black
 
-#define MAX_PATTERNS 11
+#define MAX_PATTERNS 6
+#define MAX_PALETTES 8
 
 
 
 CRGB leds[NUM_LEDS];
 uint8_t hues[NUM_LEDS];
 static uint8_t patternIndex = 0;
+static uint8_t paletteIndex = 0;
 
 #endif

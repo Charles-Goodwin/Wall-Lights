@@ -116,7 +116,7 @@ void digitalRainPalette(CRGBPalette16 palette) {
 }
 
 void digitalRain() {
-  digitalRainPalette(digitalRain_gp);
+  digitalRainPalette(palettes[paletteIndex].palette);
 }
 
 
@@ -748,8 +748,12 @@ void UnionJack_Grey() {
    waveFlag("/unionJack.csv", UnionJack_grey_gp);
 }
 
+void UnionJack() {
+   waveFlag("/unionJack.csv", palettes[paletteIndex].palette);
+}
+
 void Fluorescent_Red() {
-  fluorescent(Fluorescent_red_gp);
+  fluorescent(palettes[paletteIndex].palette);
 }
 
 void displayMessage() {
@@ -809,7 +813,7 @@ void displayFlurries() {
 }
 
 void fire2012() {
-  Fire2012WithPalette(HeatColors_p);
+  Fire2012WithPalette(palettes[paletteIndex].palette);
 }
 
 //Lets sort out a play list
@@ -825,17 +829,16 @@ typedef PatternAndName PatternAndNameList[];
 //Now lets populate it
 PatternAndNameList patterns = {
  {displayNoise,                   "lava lamp"},
- {displayMist,                    "Wavey clouds"},
- {rainbowCircles,                 "Bouncing circles"},
  {fire2012,                       "Fire"},
  {digitalRain,                    "Matrix Digital Rain"} ,
- {UnionJack_Pink,                 "Union Jack - Psychedelic" },
- {UnionJack_Grey,                 "Union Jack - Grey" },
+ {UnionJack,                      "Union Jack"},
+ {rainbowCircles,                 "Bouncing circles"},
+ {Fluorescent_Red,                "Florescent Tube" },
  {pong,                           "Pong clock"},
- {Fluorescent_Red,                "Florescent Tube - Red" },
  {displaySunshine,                "Sunshine"},
  {displayHeavySnow,               "Heavy Snow" }, 
  {displayFreezingRain,            "Freezing Rain" }, 
+// {displayMist,                    "Wavey clouds"},
 //  { displaySnow,                "Display Snow" }, 
 //  { displayLightSnow,           "Display Light Snow" }, 
 //  { displayFlurries,            "Display Flurries" }, 

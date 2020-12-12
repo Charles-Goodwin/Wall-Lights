@@ -90,7 +90,13 @@ void ChangePaletteAndSettingsPeriodically()
     SetupLavaRedPalette(currentPalette);                  speed = 4; scale = 18; colorLoop = 0; 
     SetupLavaBluePalette(currentPalette);                  speed = 4; scale = 18; colorLoop = 1; 
     SetupLavaPurplePalette(currentPalette);                  speed = 5; scale = 18; colorLoop = 1; 
+    
   }
+  currentPalette = palettes[paletteIndex].palette;
+  speed = 5; 
+  scale = 20; 
+  colorLoop = 1; 
+ 
 }
 
 void mapNoiseToLEDsUsingPalette()
@@ -180,6 +186,8 @@ void displayNoise (){
 
   // Periodically choose a new palette, speed, and scale
   ChangePaletteAndSettingsPeriodically();
+  
+
 
   // generate noise data
   fillnoise8();

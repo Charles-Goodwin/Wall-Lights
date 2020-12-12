@@ -40,14 +40,27 @@ DEFINE_GRADIENT_PALETTE( digitalRain_gp ) {
   0,    90,  100,  100,
   8,    20,  150,  30,
   16,   40,  120,  50,
-  24,   90, 150,  100,
+  24,   90, 150,   100,
   32,   10,  100,  20,
-  40,   40,  100,   50,
-  48,   90, 150,  100,
+  40,   40,  100,  50,
+  48,   90, 150,   100,
   56,   60,  120,  70,  
   64,   10,  150,  20, 
   80,   0,   150,  0,
   255,  0,   150,  0};
+
+DEFINE_GRADIENT_PALETTE( digitalRainOrange_gp ) {
+  0,    255, 203, 135,
+  8,    201, 153, 89,
+  16,   237, 169, 78,
+  24,   237, 169, 78,
+  32,   184, 115, 24,
+  40,   184, 115, 24,
+  48,   120, 74,  13,
+  56,   252, 144, 0,  
+  64,   191, 111, 4, 
+  80,   255, 145, 0,
+  255,  255, 145, 0};  
 
   
 DEFINE_GRADIENT_PALETTE( Cloud_gp ) {
@@ -334,6 +347,19 @@ const TProgmemRGBPalette16 Text_p FL_PROGMEM =
   0x34ebde, 0x34ebde, 0x34ebde, 0x34ebde  //red, red, red, red
 };
 
+DEFINE_GRADIENT_PALETTE( LavaPurplePalette_gp ) {
+  0,   0,   0,  0, 
+  64,  88,  0,  150, 
+  128, 163, 0,  101, 
+  192, 255, 79, 161,
+  255, 0,   0,  0
+};
+
+DEFINE_GRADIENT_PALETTE( blankPalette_gp ) {
+  0,   0,   0,  0, 
+  255, 0,   0,  0
+};
+
 // This function generates a random palette that's a gradient
 // between four different colors.  The first is a dim hue, the second is 
 // a bright hue, the third is a bright pastel, and the last is 
@@ -412,10 +438,24 @@ void SetupPurpleAndGreenPalette(CRGBPalette16& palette )
     purple, purple, black,  black );
 }
 
-const CRGBPalette32 palettes[] = {
-  UnionJack_grey_gp,
-  UnionJack_pink_gp,
-  Cloud_gp
-};
+//Lets set up a list of palettes
+
+typedef struct {
+  TProgmemRGBGradientPalettePtr  palette;
+  String name;
+} PaletteAndName;
+
+const PaletteAndName palettes[] = {
+  {LavaPurplePalette_gp,            "Lava Lamp - Pink/Purple"},
+  {Thermal_gp,                      "Thermal spectrum"},
+  {digitalRain_gp,                  "Digital Rain - Green"},
+  {UnionJack_pink_gp,               "Union Jack - Psychodelic"},
+  {blankPalette_gp,                 "Blank Palette"},
+  {Fluorescent_red_gp,              "Shades of red"},
+  {UnionJack_grey_gp,               "UnionJack - Grey"},
+  {digitalRainOrange_gp,            "Digital Rain - Orange"}
+
+
+};  
 
 #endif
