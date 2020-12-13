@@ -37,5 +37,6 @@ CRGB leds[NUM_LEDS];
 uint8_t hues[NUM_LEDS];
 static uint8_t patternIndex = 0;
 static uint8_t paletteIndex = 0;
+uint8_t g_brightness = BRIGHTNESS;
 
 #endif

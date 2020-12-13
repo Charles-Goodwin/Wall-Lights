@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ArduinoJson.h>
+#include "define.h"
 
 StaticJsonDocument<250> doc;
 
@@ -67,6 +68,10 @@ const char index_html[] PROGMEM = R"rawliteral(
       %PALETTE_LIST%
       </select></p>
     </div>
+    <div class="card">
+      <h2>Brightness</h2> 
+      <p><input type="range" style="width: 280px" min="0" max="255" id="brightness" name="brightness" value="%BRIGHTNESS%"></p>
+    </div>
   </div>
 <script>
   
@@ -98,39 +103,47 @@ const char index_html[] PROGMEM = R"rawliteral(
     case "palette":  
       document.getElementById('palette').selectedIndex = message.value;
       break;
+    case "brightness":  
+      document.getElementById('brightness').value = message.value;
+      break;
     default:
       console.log('Web Socket message key not recognised');
     }
   }
   function onLoad(event) {
     initWebSocket();
-    initSelect();
+    initControls();
   }
 
-  function initSelect() {
+  function initControls() {
     document.getElementById('pattern').addEventListener('change', selectPattern);
     document.getElementById('palette').addEventListener('change', selectPalette);
+    document.getElementById('brightness').addEventListener('change', rangeBrightness);
   }
   
-  function selectPattern(){
-    
+  function selectPattern(){ 
     var message = '{"key":"pattern", "value":' + document.getElementById('pattern').selectedIndex + '}';
     console.log('Sending Pattern Index');
     console.log(document.getElementById('pattern').selectedIndex);
     console.log(message);
     websocket.send(message);
-    document.getElementById('palette').selectedIndex = document.getElementById('pattern').selectedIndex;
-    
+    document.getElementById('palette').selectedIndex = document.getElementById('pattern').selectedIndex;    
   }
 
-    function selectPalette(){
-    
+  function selectPalette(){
     var message = '{"key":"palette", "value":' + document.getElementById('palette').selectedIndex + '}';
     console.log('Sending Palette Index');
     console.log(document.getElementById('palette').selectedIndex);
     console.log(message);
     websocket.send(message);
-    
+  }
+
+  function rangeBrightness(){
+    var message = '{"key":"brightness", "value":' + document.getElementById('brightness').value + '}';
+    console.log('Sending Brightness Index');
+    console.log(document.getElementById('brightness').value);
+    console.log(message);
+    websocket.send(message);
   }
 
 </script>
@@ -164,7 +177,12 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       Serial.println(paletteIndex);
       String message = "{key:\"palette\", value:" + (String)patternIndex + "}";
     }
-    
+    if (doc["key"] = "brightness"){
+      g_brightness = (int)doc["value"];
+      Serial.print("brightness: ");
+      Serial.println(g_brightness);
+      String message = "{key:\"brightness\", value:" + (String)g_brightness + "}";
+    }
     notifyClients(message);
   }
 }
@@ -218,5 +236,9 @@ String processor(const String& var){
     }
     Serial.println(list);
     return list;
-  }    
+  }
+  if (var=="BRIGHTNESS") {
+    Serial.println(g_brightness);
+    return (String)g_brightness;
+  }        
 }
