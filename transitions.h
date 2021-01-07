@@ -109,12 +109,12 @@ int exitLaser(String message) {
         }
         for (int j = 0; j <=2; j++) {
           if (bitRead(font_10[i][j], k)) {
-            setPixel(cursorX,cursorY,colour, BRIGHTNESS);
+            setPixel(cursorX,cursorY,colour, g_brightness);
           }
           if (k==6&frame>2) 
-            {setPixel(cursorX, 5, colour, BRIGHTNESS);}
+            {setPixel(cursorX, 5, colour, g_brightness);}
           else if (bitRead(font_10[i][j], (12-k))) {
-            setPixel(cursorX,(18-k),colour, BRIGHTNESS);  
+            setPixel(cursorX,(18-k),colour, g_brightness);  
           }
           if (font_10[i][j]) {cursorX += 3;}
         }
@@ -159,12 +159,12 @@ int enterLaser(String message) {
         }
         for (int j = 0; j <=2; j++) {
           if (bitRead(font_10[i][j], k)) {
-            setPixel(cursorX,cursorY, colour, BRIGHTNESS);
+            setPixel(cursorX,cursorY, colour, g_brightness);
           }
           if (k==6&frame>3) 
-            {setPixel(cursorX,5, colour, BRIGHTNESS);}
+            {setPixel(cursorX,5, colour, g_brightness);}
           else if (bitRead(font_10[i][j], (12-k))) {
-            setPixel(cursorX,(18-k), colour, BRIGHTNESS);  
+            setPixel(cursorX,(18-k), colour, g_brightness);  
           }
           
           if (font_10[i][j]) {cursorX += 3;}
@@ -205,7 +205,7 @@ int exitDown(String message) {
             //Serial.println (cursorX);
             //Serial.print ("cursorY: ");
             //Serial.println (cursorY);
-            setPixel(cursorX,cursorY, colour, BRIGHTNESS);
+            setPixel(cursorX,cursorY, colour, g_brightness);
           }  
           if (font_10[i][j]) {cursorX++;}
         }
@@ -250,7 +250,7 @@ int enterDown(String message) {
             Serial.println (cursorX);
             Serial.print ("cursorY: ");
             Serial.println (cursorY);
-            setPixel(cursorX,cursorY,colour, BRIGHTNESS);
+            setPixel(cursorX,cursorY,colour, g_brightness);
           }  
           if (font_10[i][j]) {cursorX++;}
         }
@@ -297,7 +297,7 @@ int enterUp(String message) {
             Serial.println (cursorX);
             Serial.print ("cursorY: ");
             Serial.println (cursorY);
-            setPixel(cursorX,cursorY,colour, BRIGHTNESS);
+            setPixel(cursorX,cursorY,colour, g_brightness);
           }  
           if (font_10[i][j]) {cursorX++;}
         }
@@ -344,7 +344,7 @@ int exitUp(String message) {
             //Serial.println (cursorX);
             //Serial.print ("cursorY: ");
             //Serial.println (cursorY);
-            setPixel(cursorX,cursorY,colour,BRIGHTNESS);
+            setPixel(cursorX,cursorY,colour,g_brightness);
           }  
           if (font_10[i][j]) {cursorX++;}
         }

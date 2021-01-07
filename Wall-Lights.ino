@@ -23,7 +23,7 @@ void setup() {
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS)
         .setCorrection( TypicalLEDStrip );
   FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);
-  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.setBrightness(g_brightness);
 
   Serial.begin(115200);
 
@@ -40,7 +40,9 @@ void setup() {
   //timeSync();
   
   randomSeed(analogRead(A0));
+
 }
+
 
 void loop(){
   
@@ -53,13 +55,30 @@ void loop(){
 
   EVERY_N_MILLISECONDS(1000) {
     ws.cleanupClients();
-  } 
-
+  }
+  
+  EVERY_N_MILLISECONDS(1000) {
+    static uint8_t previous = g_hueShift;
+    g_hueShift += g_hueTempo;
+    if (g_hueShift != previous) {
+      notifyClients("{\"key\":\"hueShift\", \"value\":" + (String)g_hueShift + "}");
+      previous = g_hueShift;
+    }
+  }
+   
   EVERY_N_MILLISECONDS(3000) {
+   
     Serial.println("Pattern and Pallete Index");
-    Serial.print(patternIndex);
+    Serial.println(patternIndex);
     Serial.println(paletteIndex);
-  } 
+    Serial.println("Brightness and Hue Tempo");
+    Serial.println(g_brightness);
+    Serial.println(g_hueTempo);
+ 
+    Serial.println();
+    Serial.println();
+   
+  }   
 }
 
 

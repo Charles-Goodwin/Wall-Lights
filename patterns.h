@@ -6,6 +6,7 @@
 #include "transitions.h"
 #include "timeSync.h"
 #include "patNoise.h"
+#include "patXmas.h"
 
 typedef struct Circle{
     int x = 0; //expressed as 6 times 
@@ -20,7 +21,7 @@ typedef struct Circle{
 
 // My first stab at emulating the iconic raining code from the movie The Matrix
 // The Palette parameter allows you to use an alternative to the traditional green monitor effect
-void digitalRainPalette(CRGBPalette16 palette) {
+void digitalRainPalette(CRGBPalette256 palette) {
   //Declare a Trail type
   // Trail comprises of x, y coords, governing throttle, life span and a palette index
   typedef struct Trail{
@@ -68,11 +69,11 @@ void digitalRainPalette(CRGBPalette16 palette) {
         }
         else {
           //Assign the color to the head of the trail
-          leds[XY(trailList[i].x,trailList[i].y)] = ColorFromPalette(palette, trailList[i].palIndex, BRIGHTNESS, NOBLEND);
+          leds[XY(trailList[i].x,trailList[i].y)] = ColorFromPalette(palette, trailList[i].palIndex, g_brightness, NOBLEND);
           //Set the tail of the trail 
-          leds[XY(trailList[i].x, trailList[i].y + 1)] = ColorFromPalette(palette, (trailList[i].palIndex+8), BRIGHTNESS, NOBLEND);
-          leds[XY(trailList[i].x, trailList[i].y + 2)] = ColorFromPalette(palette, (trailList[i].palIndex+16), BRIGHTNESS, NOBLEND);
-          leds[XY(trailList[i].x, trailList[i].y + 3)] = ColorFromPalette(palette, 200, BRIGHTNESS, NOBLEND);
+          leds[XY(trailList[i].x, trailList[i].y + 1)] = ColorFromPalette(palette, (trailList[i].palIndex+8), g_brightness, NOBLEND);
+          leds[XY(trailList[i].x, trailList[i].y + 2)] = ColorFromPalette(palette, (trailList[i].palIndex+16), g_brightness, NOBLEND);
+          leds[XY(trailList[i].x, trailList[i].y + 3)] = ColorFromPalette(palette, 200, g_brightness, NOBLEND);
           // The remaining part of the tail will fade as part of the general dimming
           
           //Advance trail down one
@@ -116,7 +117,7 @@ void digitalRainPalette(CRGBPalette16 palette) {
 }
 
 void digitalRain() {
-  digitalRainPalette(palettes[paletteIndex].palette);
+  digitalRainPalette(palettes[paletteIndex].palette());
 }
 
 
@@ -126,7 +127,7 @@ void digitalRain() {
 // Inputs:
 // Filename refers to a csv file that holds a palette index for eaxh pixel you have in your matrix
 // palette represents the colours referenced by the csv file
-void waveFlag(char fileName[50], CRGBPalette32 palette) {
+void waveFlag(char fileName[50], CRGBPalette256 palette) {
   static uint8_t strip[NUM_LEDS];
   static uint8_t firstTime = 1;
   const uint8_t freq = 2;  // wave frequency 
@@ -149,7 +150,7 @@ void waveFlag(char fileName[50], CRGBPalette32 palette) {
         if (serial != -1) {
           waveShift = mod8((i*freq) + (j/slope) + inc, 32);
           palletIndex = strip[serial] + waveShift;
-          leds[serial] = ColorFromPalette(palette, palletIndex, BRIGHTNESS, LINEARBLEND );
+          leds[serial] = ColorFromPalette(palette, palletIndex, g_brightness, LINEARBLEND );
         }  
       }
     } 
@@ -157,7 +158,7 @@ void waveFlag(char fileName[50], CRGBPalette32 palette) {
 }
 
 // We must have fire
-void Fire2012WithPalette(CRGBPalette16 gPal)
+void Fire2012WithPalette(CRGBPalette256 gPal)
 {
 // Array of temperature readings at each simulation cell
   const uint8_t COOLING = 80;
@@ -253,13 +254,13 @@ void drawCircle (Circle circle){
       for (int y_pixel = circle.y - y; y_pixel <= circle.y + y; y_pixel++){
         int i = XYwrap(x_pixel,y_pixel);
         if (i != -1) {
-          uint8_t brightness = BRIGHTNESS;
+          uint8_t brightness = g_brightness;
           if (hues[i] == 0) {brightness = 0;}
-          antialias_p[0] = CHSV(hues[i],255, brightness);
-          antialias_p[255] = CHSV(hues[i] + circle.hue,255, BRIGHTNESS);
-          //leds[i] = ColorFromPalette(antialias_p,127, BRIGHTNESS/5, LINEARBLEND);
+          antialias_p[0] = CHSV(hues[i],255, g_brightness);
+          antialias_p[255] = CHSV(hues[i] + circle.hue,255, g_brightness);
+          //leds[i] = ColorFromPalette(antialias_p,127, g_brightness/5, LINEARBLEND);
           //leds[i] = CRGB::Red;
-          leds[i] = CHSV(circle.hue,255, BRIGHTNESS/5);
+          leds[i] = CHSV(circle.hue,255, g_brightness/5);
         }
       }
     }
@@ -291,7 +292,7 @@ void drawCircle (Circle circle){
           Serial.println ("End of y_pixel loop");  
           */
           hues[i] += circle.hue; 
-          leds[i] = CHSV(hues[i],255, BRIGHTNESS);
+          leds[i] = CHSV(hues[i],255, g_brightness);
         }
       }
     }
@@ -411,7 +412,7 @@ void displayColours(){
 
 
 
-void fluorescent(CRGBPalette16 palette){
+void fluorescent(CRGBPalette256 palette){
   int brightness;
   int palletIndex;
   static uint8_t firstTime = 1;   
@@ -492,10 +493,10 @@ void displayRain(CRGBPalette32 palette_cloud, CRGBPalette32 palette_rain){
         index = XY(i,j);
         if (index != -1) {
           if (j < 26) {
-            leds[index] = ColorFromPalette(palette_rain, strip[index], BRIGHTNESS, NOBLEND );
+            leds[index] = ColorFromPalette(palette_rain, strip[index], g_brightness, NOBLEND );
             strip[index]+= 8;
           } else {
-            leds[index] = ColorFromPalette(palette_cloud, strip[index], BRIGHTNESS, LINEARBLEND );
+            leds[index] = ColorFromPalette(palette_cloud, strip[index], g_brightness, LINEARBLEND );
             strip[index]+= 1;
           }
         }
@@ -540,8 +541,8 @@ void displaySnow(int intensity){
         int leftIndex = XY((i*2),trailInfo[i][j][0]);
         int rightIndex = XY(((i*2)+1),trailInfo[i][j][0]);
         if (leftIndex != -1 && rightIndex != -1) {
-          leds[leftIndex] = ColorFromPalette(Snow, trailInfo[i][j][1], BRIGHTNESS, LINEARBLEND );
-          leds[rightIndex] = ColorFromPalette(Snow, (127 + trailInfo[i][j][1]), BRIGHTNESS, LINEARBLEND );
+          leds[leftIndex] = ColorFromPalette(Snow, trailInfo[i][j][1], g_brightness, LINEARBLEND );
+          leds[rightIndex] = ColorFromPalette(Snow, (127 + trailInfo[i][j][1]), g_brightness, LINEARBLEND );
           
           if (!mod8(counter,4)) {
             trailInfo[i][j][0]--;
@@ -558,7 +559,7 @@ void displaySnow(int intensity){
       for (int j = 26; j < 39; j++) {
         int index = XY(i,j);
         if (index != -1) {
-          leds[index] = ColorFromPalette(palette_cloud, strip[index], BRIGHTNESS, LINEARBLEND ); 
+          leds[index] = ColorFromPalette(palette_cloud, strip[index], g_brightness, LINEARBLEND ); 
           strip[index]+= 1; 
         }
       }
@@ -591,9 +592,9 @@ void testPannel(){
   blendPalette[100] = CHSV(HUE_RED,50,50);
 
   for (int i = 0; i<NUM_LEDS_PER_LONG_STRIP; i++){
-    leds[XY(0,i)] = ColorFromPalette(blendPalette, 0,BRIGHTNESS , LINEARBLEND);
-    leds[XY(1,i)] = ColorFromPalette(blendPalette, 100,BRIGHTNESS , LINEARBLEND);
-    leds[XY(2,i)] = ColorFromPalette(blendPalette, 50,BRIGHTNESS , LINEARBLEND);
+    leds[XY(0,i)] = ColorFromPalette(blendPalette, 0,g_brightness , LINEARBLEND);
+    leds[XY(1,i)] = ColorFromPalette(blendPalette, 100,g_brightness , LINEARBLEND);
+    leds[XY(2,i)] = ColorFromPalette(blendPalette, 50,g_brightness , LINEARBLEND);
   }
     
 }
@@ -634,11 +635,11 @@ void displayCloud(int percentage, CRGBPalette32 palette_cloud, CRGBPalette32 pal
         if (index != -1) {
           //Animate Sunshine
           if (j <26){
-            leds[index] = ColorFromPalette(palette_sun, strip[index], BRIGHTNESS, LINEARBLEND );  
+            leds[index] = ColorFromPalette(palette_sun, strip[index], g_brightness, LINEARBLEND );  
           }
           //Animate Cloud
           else {
-            leds[index] = ColorFromPalette(palette_cloud, strip[index], BRIGHTNESS, LINEARBLEND );
+            leds[index] = ColorFromPalette(palette_cloud, strip[index], g_brightness, LINEARBLEND );
           }
           strip[index]+= 1;
         }
@@ -714,7 +715,7 @@ void displaySunshine(){
         int index = XY(i,j);
         if (index != -1) {
           if (matrix[38-j][i] != 0) {
-            leds[index] = ColorFromPalette(sunshine, (count + matrix[38-j][i]), BRIGHTNESS, LINEARBLEND) ;  
+            leds[index] = ColorFromPalette(sunshine, (count + matrix[38-j][i]), g_brightness, LINEARBLEND) ;  
           }
         }        
       }
@@ -724,13 +725,13 @@ void displaySunshine(){
   }
 }
 
-void showPallet(CRGBPalette32 palette){
+void showPallet(CRGBPalette256 palette){
   for ( int i = 0; i < 256 ; i++) {
-    leds[i] = ColorFromPalette(palette, i, BRIGHTNESS, NOBLEND );
+    leds[i] = ColorFromPalette(palette, i, g_brightness, NOBLEND );
   }
 }
 void showTestPalette(){
-  showPallet(digitalRain_gp);
+  showPallet(palettes[paletteIndex].palette());
 }
 
 
@@ -739,21 +740,12 @@ void displayMist(){
 }
 
 
-
-void UnionJack_Pink() {
-   waveFlag("/unionJack.csv", UnionJack_pink_gp);
-};
-
-void UnionJack_Grey() {
-   waveFlag("/unionJack.csv", UnionJack_grey_gp);
-}
-
 void UnionJack() {
-   waveFlag("/unionJack.csv", palettes[paletteIndex].palette);
+   waveFlag("/unionJack.csv", palettes[paletteIndex].palette());
 }
 
 void Fluorescent_Red() {
-  fluorescent(palettes[paletteIndex].palette);
+  fluorescent(palettes[paletteIndex].palette());
 }
 
 void displayMessage() {
@@ -813,7 +805,11 @@ void displayFlurries() {
 }
 
 void fire2012() {
-  Fire2012WithPalette(palettes[paletteIndex].palette);
+  Fire2012WithPalette(palettes[paletteIndex].palette());
+}
+
+void displayTrees() {
+  Xmas(palettes[paletteIndex].palette());
 }
 
 //Lets sort out a play list
@@ -828,12 +824,14 @@ typedef PatternAndName PatternAndNameList[];
 
 //Now lets populate it
 PatternAndNameList patterns = {
+ {displayTrees,                   "Christmas Trees"},
  {displayNoise,                   "lava lamp"},
  {fire2012,                       "Fire"},
  {digitalRain,                    "Matrix Digital Rain"} ,
  {UnionJack,                      "Union Jack"},
  {rainbowCircles,                 "Bouncing circles"},
  {Fluorescent_Red,                "Florescent Tube" },
+ {showTestPalette,                "Full Palette Colours"},
  {pong,                           "Pong clock"},
  {displaySunshine,                "Sunshine"},
  {displayHeavySnow,               "Heavy Snow" }, 

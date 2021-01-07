@@ -7,7 +7,7 @@
 //#define CLK_PIN   4
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define BRIGHTNESS 170
+#define BRIGHTNESS 255
 //Irregular Matrix fully defined
 #define NUM_SHORT_STRIPS 11
 #define NUM_LONG_STRIPS 8
@@ -28,15 +28,17 @@
 #define SYMBOL_COLOUR  Red
 #define BACK_COLOUR  Black
 
-#define MAX_PATTERNS 6
+#define MAX_PATTERNS 8
 #define MAX_PALETTES 8
 
 
 
 CRGB leds[NUM_LEDS];
 uint8_t hues[NUM_LEDS];
-static uint8_t patternIndex = 0;
-static uint8_t paletteIndex = 0;
+static uint8_t patternIndex = 2;
+static uint8_t paletteIndex = 2;
 uint8_t g_brightness = BRIGHTNESS;
+uint8_t g_hueTempo = 0;
+uint8_t g_hueShift = 0;
 
 #endif

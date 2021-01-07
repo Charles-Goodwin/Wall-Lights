@@ -1,4 +1,6 @@
 
+#include "palette.h"
+
 const uint8_t kMatrixWidth  = 19 * X_SCALE;
 const uint8_t kMatrixHeight = 39;
 
@@ -51,7 +53,7 @@ uint16_t scale = 30; // scale is set dynamically once we've started up
 // This is the array that we keep our computed noise values in
 uint8_t noise[MAX_DIMENSION][MAX_DIMENSION];
 
-CRGBPalette16 currentPalette( PartyColors_p );
+CRGBPalette256 currentPalette;
 uint8_t       colorLoop = 1;
 
 // There are several different palettes of colors demonstrated here.
@@ -67,36 +69,12 @@ uint8_t       colorLoop = 1;
 // etc
 #define HOLD_PALETTES_X_TIMES_AS_LONG 2
 
-void ChangePaletteAndSettingsPeriodically()
-{
-  uint8_t secondHand = ((millis() / 1000) / HOLD_PALETTES_X_TIMES_AS_LONG) % 60;
-  static uint8_t lastSecond = 99;
-  
-  if( lastSecond != secondHand) {
-    lastSecond = secondHand;
-    if( secondHand ==  0)  { currentPalette = RainbowColors_p;                  speed = 20; scale = 30; colorLoop = 1; }
-    if( secondHand ==  5)  { SetupPurpleAndGreenPalette(currentPalette);        speed = 10; scale = 50; colorLoop = 1; }
-    if( secondHand == 10)  { SetupBlackAndWhiteStripedPalette(currentPalette);  speed = 20; scale = 30; colorLoop = 1; }
-    if( secondHand == 15)  { currentPalette = ForestColors_p;                   speed =  8; scale =120; colorLoop = 0; }
-    if( secondHand == 20)  { currentPalette = CloudColors_p;                    speed =  4; scale = 30; colorLoop = 0; }
-    if( secondHand == 25)  { currentPalette = LavaColors_p;                     speed =  8; scale = 50; colorLoop = 0; }
-    if( secondHand == 30)  { currentPalette = OceanColors_p;                    speed = 20; scale = 90; colorLoop = 0; }
-    if( secondHand == 35)  { currentPalette = PartyColors_p;                    speed = 20; scale = 30; colorLoop = 1; }
-    if( secondHand == 40)  { SetupRandomPalette(currentPalette);                speed = 20; scale = 20; colorLoop = 1; }
-    if( secondHand == 45)  { SetupRandomPalette(currentPalette);                speed = 50; scale = 50; colorLoop = 1; }
-    if( secondHand == 50)  { SetupRandomPalette(currentPalette);                speed = 90; scale = 90; colorLoop = 1; }
-    if( secondHand == 55)  { currentPalette = RainbowStripeColors_p;            speed = 30; scale = 20; colorLoop = 1; }
-    SetupMyPalette(currentPalette);                    speed = 5; scale = 18; colorLoop = 0;
-    SetupLavaRedPalette(currentPalette);                  speed = 4; scale = 18; colorLoop = 0; 
-    SetupLavaBluePalette(currentPalette);                  speed = 4; scale = 18; colorLoop = 1; 
-    SetupLavaPurplePalette(currentPalette);                  speed = 5; scale = 18; colorLoop = 1; 
-    
-  }
-  currentPalette = palettes[paletteIndex].palette;
+void ChangePaletteAndSettingsPeriodically(){
+  //currentPalette = LavaLampPurple_pal();
+  // currentPalette = palettes[paletteIndex].palette();
   speed = 5; 
   scale = 20; 
   colorLoop = 1; 
- 
 }
 
 void mapNoiseToLEDsUsingPalette()
@@ -187,12 +165,14 @@ void displayNoise (){
   // Periodically choose a new palette, speed, and scale
   ChangePaletteAndSettingsPeriodically();
   
-
-
   // generate noise data
   fillnoise8();
 
   // convert the noise data to colors in the LED array
   // using the current palette
   mapNoiseToLEDsUsingPalette();
+
+
+
+  
 }

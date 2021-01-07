@@ -8,33 +8,8 @@
 // White  96 - 128
 
 
-DEFINE_GRADIENT_PALETTE( UnionJack_pink_gp ) {
-  0,    0,    0,    255,
-  8,    0,    255,  255,
-  16,   0,    0,    255,
-  32,   0,    0,    255,
-  48,   255,  0,    0,
-  56,   255,  0,    255,
-  64,   255,  0,    0,
-  80,   255,  0 ,   0, 
-  96,   200,  200,  200,
-  104,  0,    255,  0,
-  112,  200,  200,  200, 
-  255,  200,  200,  200};
 
-DEFINE_GRADIENT_PALETTE( UnionJack_grey_gp ) {
-  0,    80,  80,  80,
-  8,    0,   0,   255,
-  16,   80,  80,  80,
-  32,   80,  80,  80,
-  48,   20,  20,  20,
-  56,   255,  0,  0,
-  64,   20,   20,   20,
-  80,   20,   20,   20,
-  96,   150,  150,  150,
-  104,  255,  255,  255,
-  112,  150,  150,  150,
-  255,  150,  150,  150};
+
 
 DEFINE_GRADIENT_PALETTE( digitalRain_gp ) {
   0,    90,  100,  100,
@@ -322,11 +297,7 @@ DEFINE_GRADIENT_PALETTE( RGB_Test_gp ) {
 
 
   
-DEFINE_GRADIENT_PALETTE( Fluorescent_red_gp ) {
-  0,    255,  0,  0,
-  240,  15,   5,  20,
-  255,  15,   5,  20
-  } ; 
+
 
 
 DEFINE_GRADIENT_PALETTE( Thermal_gp ) {
@@ -340,6 +311,7 @@ DEFINE_GRADIENT_PALETTE( Thermal_gp ) {
   255, 255, 0, 0      // red    
 };
 
+
 const TProgmemRGBPalette16 Text_p FL_PROGMEM =
 { 0x34ebde, 0x34ebde, 0x34ebde, 0x34ebde, //red, orange, yellow, green
   0x34ebde, 0x34ebde, 0x34ebde, 0x34ebde, // aqua, blue, purple, pink 
@@ -347,115 +319,213 @@ const TProgmemRGBPalette16 Text_p FL_PROGMEM =
   0x34ebde, 0x34ebde, 0x34ebde, 0x34ebde  //red, red, red, red
 };
 
-DEFINE_GRADIENT_PALETTE( LavaPurplePalette_gp ) {
-  0,   0,   0,  0, 
-  64,  88,  0,  150, 
-  128, 163, 0,  101, 
-  192, 255, 79, 161,
-  255, 0,   0,  0
-};
+CRGBPalette256 Test_pal() {
+  CRGB col;
+  byte pal[8];
+  CRGBPalette256 palette;
+ 
+  col = CHSV(0, 255,  200); pal[0] = 0;     pal[1] = col.r; pal[2] = col.g; pal[3] = col.b; 
+  col = CHSV(0, 0,    200); pal[4] = 255;   pal[5] = col.r; pal[6] = col.g; pal[7] = col.b;
+
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
+
+
+CRGBPalette256 Halogen_pal() {
+  CRGBPalette256 palette;
+  
+  CRGB col[] = {
+    CHSV(32 + g_hueShift,    37,    255),
+    CHSV(40 + g_hueShift,    255,   150),
+    CHSV(17 + g_hueShift,    255,   163), 
+    CHSV(17 + g_hueShift,    176,   255)
+  };
+
+  uint8_t pal[] = {0,   col[0].r, col[0].g, col[0].b ,
+                  255,  col[0].r, col[0].g, col[0].b 
+  };
+  
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
+
+//Palette created on the fly so that
+// we can incorporate a hue shift
+CRGBPalette256 LavaLampPurple_pal() {
+  CRGBPalette256 palette;
+  
+  CRGB col[] = {
+    CHSV(0 + g_hueShift,      0,     0),
+    CHSV(192 + g_hueShift,    255,   150),
+    CHSV(234 + g_hueShift,    255,   163), 
+    CHSV(255 + g_hueShift,    176,   255),
+    CHSV(43 + g_hueShift,     0,     0)
+  };
+  uint8_t pal[] = {0,   col[0].r, col[0].g, col[0].b ,
+                  64,   col[1].r, col[1].g, col[1].b ,
+                  128,  col[2].r, col[2].g, col[2].b ,
+                  192,  col[3].r, col[3].g, col[3].b ,
+                  255,  col[4].r, col[4].g, col[4].b 
+  };
+  
+  palette.loadDynamicGradientPalette(pal) ;
+} 
+
+CRGBPalette256 Thermal_pal() {
+  CRGBPalette256 palette;
+  CRGB col[] = {
+    CHSV(0 + g_hueShift,   0,     0),
+    CHSV(0 + g_hueShift,   255,   51),
+    CHSV(0 + g_hueShift,   255,   255), 
+    CHSV(9 + g_hueShift,   255,   255),
+    CHSV(43 + g_hueShift,  255,   255), 
+    CHSV(43 + g_hueShift,  204,   255), 
+    CHSV(43 + g_hueShift,  0,     255), 
+    CHSV(43 + g_hueShift,  0,     0)
+  };
+
+  uint8_t pal[] = {0,   col[0].r, col[0].g, col[0].b ,
+                  16,   col[1].r, col[1].g, col[1].b ,
+                  80,   col[2].r, col[2].g, col[2].b ,
+                  96,   col[3].r, col[3].g, col[3].b ,
+                  160,  col[4].r, col[4].g, col[4].b ,
+                  176,  col[5].r, col[5].g, col[5].b ,
+                  240,  col[6].r, col[6].g, col[6].b ,
+                  255,  col[7].r, col[7].g, col[8].b ,
+  };
+  
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
+
+CRGBPalette256 DigitalRain_pal() {
+  CRGBPalette256 palette;
+  CRGB col[] = {
+    CHSV(90 + g_hueShift,   0,    240),
+    CHSV(90 + g_hueShift,   100,  230),
+    CHSV(90 + g_hueShift,   50,   220), 
+    CHSV(90 + g_hueShift,   100,  210),
+    CHSV(90 + g_hueShift,   180,  200), 
+    CHSV(90 + g_hueShift,   150,  190), 
+    CHSV(90 + g_hueShift,   200,  180), 
+    CHSV(90 + g_hueShift,   190,  170), 
+    CHSV(90 + g_hueShift,   230,  160), 
+    CHSV(90 + g_hueShift,   255,  150), 
+    CHSV(90 + g_hueShift,   255,  150)
+  };
+
+  uint8_t pal[] = {0,   col[0].r, col[0].g, col[0].b ,
+                  8,    col[1].r, col[1].g, col[1].b ,
+                  16,   col[2].r, col[2].g, col[2].b ,
+                  24,   col[3].r, col[3].g, col[3].b ,
+                  32,   col[4].r, col[4].g, col[4].b ,
+                  40,   col[5].r, col[5].g, col[5].b ,
+                  48,   col[6].r, col[6].g, col[6].b ,
+                  56,   col[7].r, col[7].g, col[8].b ,
+                  64,   col[8].r, col[8].g, col[8].b ,
+                  72,   col[9].r, col[9].g, col[9].b ,
+                  255,  col[10].r, col[10].g, col[10].b
+  };
+    
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
+
+CRGBPalette256 UnionJack_pal() {
+  CRGB col;
+  CRGBPalette256 palette;
+  uint8_t pal[52];
+  
+  col = CHSV(170 + g_hueShift,  255,  130); pal[0] = 0;   pal[1] = col;
+  col = CHSV(127 + g_hueShift,  255,  255); pal[4] = 8;   pal[5] = col;
+  col = CHSV(170 + g_hueShift,  255,  130); pal[8] = 16;  pal[9] = col;
+  col = CHSV(170 + g_hueShift,  255,  130); pal[12] = 24; pal[13] = col; 
+  col = CHSV(4 + g_hueShift,    255,  204); pal[16] = 32; pal[17] = col;
+  col = CHSV(227 + g_hueShift,  255,  255); pal[20] = 56; pal[21] = col;
+  col = CHSV(4 + g_hueShift,    255,  204); pal[24] = 48; pal[25] = col;
+  col = CHSV(4 + g_hueShift,    255,  204); pal[28] = 56; pal[29] = col;  
+  col = CHSV(66 + g_hueShift,   0,    160); pal[32] = 64; pal[33] = col;  
+  col = CHSV(66 + g_hueShift,   127,  150); pal[36] = 104; pal[37] = col;
+  col = CHSV(66 + g_hueShift,   0,    150); pal[40] = 80; pal[41] = col;
+  col = CHSV(66 + g_hueShift,   0,    150); pal[44] = 88; pal[45] = col;
+  col = CHSV(170 + g_hueShift,  255,  130); pal[48] = 255; pal[49] = col;
+  
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
 
 DEFINE_GRADIENT_PALETTE( blankPalette_gp ) {
   0,   0,   0,  0, 
   255, 0,   0,  0
 };
 
-// This function generates a random palette that's a gradient
-// between four different colors.  The first is a dim hue, the second is 
-// a bright hue, the third is a bright pastel, and the last is 
-// another bright hue.  This gives some visual bright/dark variation
-// which is more interesting than just a gradient of different hues.
-void SetupRandomPalette(CRGBPalette16& palette )
-{
-  palette = CRGBPalette16( 
-                      CHSV( random8(), 255, 32), 
-                      CHSV( random8(), 255, 255), 
-                      CHSV( random8(), 128, 255), 
-                      CHSV( random8(), 255, 255)); 
+CRGBPalette256 Blank_pal() {
+   CRGBPalette256 palette = blankPalette_gp;
+   return palette;
 }
 
-void SetupMyPalette(CRGBPalette16& palette )
-{
-  palette = CRGBPalette16( 
-                      CHSV( 145, 255, 225), 
-                      CHSV( 160, 255, 255), 
-                      CHSV( 192, 255, 128), 
-                      CHSV( 160, 128, 255)); 
-}
-void SetupLavaRedPalette(CRGBPalette16& palette )
-{
-  palette = CRGBPalette16( 
-                      CHSV( 64, 255,  255), 
-                      CHSV( 0,  255,  100), 
-                      CHSV( 32, 255,  128), 
-                      CHSV( 32, 128,  255)); 
-}
-void SetupLavaBluePalette(CRGBPalette16& palette )
-{
-  palette = CRGBPalette16( 
-                      CHSV( 160, 255,  255), 
-                      CHSV( 145,  255, 100), 
-                      CHSV( 128, 255,  255), 
-                      CHSV( 100, 180,  255)); 
-}
-
-void SetupLavaPurplePalette(CRGBPalette16& palette )
-{
-  palette = CRGBPalette16( 
-                      CRGB(0,   0,  0 ), 
-                      CRGB(88,  0,  150), 
-                      CRGB(163, 0,  101), 
-                      CRGB(255, 79, 161)); 
-}
-
-// This function sets up a palette of black and white stripes,
-// using code.  Since the palette is effectively an array of
-// sixteen CRGB colors, the various fill_* functions can be used
-// to set them up.
-void SetupBlackAndWhiteStripedPalette(CRGBPalette16& palette )
-{
-  // 'black out' all 16 palette entries...
-  fill_solid( palette, 16, CRGB::Black);
-  // and set every fourth one to white.
-  palette[0] = CRGB::White;
-  palette[4] = CRGB::White;
-  palette[8] = CRGB::White;
-  palette[12] = CRGB::White;
-
-}
-
-// This function sets up a palette of purple and green stripes.
-void SetupPurpleAndGreenPalette(CRGBPalette16& palette )
-{
-  CRGB purple = CHSV( HUE_PURPLE, 255, 255);
-  CRGB green  = CHSV( HUE_GREEN, 255, 255);
-  CRGB black  = CRGB::Black;
+CRGBPalette256 Fluorescent_pal() {
+  CRGB col;
+  uint8_t pal[12];
+  CRGBPalette256 palette;
   
-  palette = CRGBPalette16( 
-    green,  green,  black,  black,
-    purple, purple, black,  black,
-    green,  green,  black,  black,
-    purple, purple, black,  black );
+  col = CHSV(0 + g_hueShift,  255,  255); pal[0] = 0;   pal[1] = col;
+  col = CHSV(0 + g_hueShift,  100,  20); pal[4] = 240;  pal[5] = col;
+  col = CHSV(0 + g_hueShift,  100,  20); pal[8] = 255;  pal[9] = col; 
+  
+  palette.loadDynamicGradientPalette(pal);
+  return palette; 
 }
 
-//Lets set up a list of palettes
+CRGBPalette256 UnionJackGrey_pal() {
+    CRGBPalette256 palette;
+ 
+  CRGB col[] = {
+    CHSV(170,  255,   255),
+    CHSV(4,    255,   255),
+    CHSV(66,   0,     255)
+  };
+ 
+  uint8_t pal[] = {0,   10,   10,   10,
+                  8,    col[0].r, col[0].g, col[0].b ,
+                  16,   10,   10,   10,
+                  32,   10,   10,   10,
+                  48,   40,   40,   40,
+                  56,   col[1].r, col[1].g, col[1].b ,
+                  64,   40,   40,   40,
+                  80,   40,   40,   40,
+                  96,   100,  100,  100,
+                  56,   col[2].r, col[2].g, col[2].b ,
+                  64,   100,  100,   100,
+                  80,   100,  100,   100,
+                  255,  100,  100,   100
+  };
 
+  palette.loadDynamicGradientPalette(pal);
+  return palette;
+} 
+
+//Lets sort out a palette list
+//First lets define its structure
+typedef CRGBPalette256 (*Palette)();
 typedef struct {
-  TProgmemRGBGradientPalettePtr  palette;
+  Palette palette;
   String name;
 } PaletteAndName;
 
 const PaletteAndName palettes[] = {
-  {LavaPurplePalette_gp,            "Lava Lamp - Pink/Purple"},
-  {Thermal_gp,                      "Thermal spectrum"},
-  {digitalRain_gp,                  "Digital Rain - Green"},
-  {UnionJack_pink_gp,               "Union Jack - Psychodelic"},
-  {blankPalette_gp,                 "Blank Palette"},
-  {Fluorescent_red_gp,              "Shades of red"},
-  {UnionJack_grey_gp,               "UnionJack - Grey"},
-  {digitalRainOrange_gp,            "Digital Rain - Orange"}
-
-
+  {Halogen_pal,                 "Warm whites"},
+  {LavaLampPurple_pal,          "Lava Lamp - Pink/Purple"},
+  {Thermal_pal,                 "Thermal spectrum"},
+  {DigitalRain_pal,             "Digital Rain - Green"},
+  {UnionJack_pal,               "Union Jack - Psychodelic"},
+  {Blank_pal,                   "Blank Palette"},
+  {Fluorescent_pal,             "Shades of red"},
+  {UnionJackGrey_pal,           "UnionJack - Grey"}
 };  
+
+
+
 
 #endif

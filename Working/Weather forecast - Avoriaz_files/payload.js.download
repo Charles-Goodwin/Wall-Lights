@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/en/winter/weather", (function(a){return {data:[{},{}],fetch:[],mutations:[["SET_SMOOTH_SCROLL_ENABLED",false],["lang\u002FRESET_ALL_LANGS",void 0],[a,{lang:"fr",path:"\u002Fhiver\u002Fmeteo"}],[a,{lang:"en",path:"\u002Fwinter\u002Fweather"}],[a,{lang:"nl",path:"\u002Fwinter\u002Fweer"}]]}}("lang\u002FSET_LANG_SWITCHER")));

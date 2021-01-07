@@ -67,10 +67,14 @@ const char index_html[] PROGMEM = R"rawliteral(
       <p><select style="width: 280px" id="palette" name="palette">
       %PALETTE_LIST%
       </select></p>
-    </div>
+    </div><br>
     <div class="card">
-      <h2>Brightness</h2> 
+      <h2>Brightness (<span id="brightness_pc">%BRIGHTNESS_TEXT%</span>)</h2> 
       <p><input type="range" style="width: 280px" min="0" max="255" id="brightness" name="brightness" value="%BRIGHTNESS%"></p>
+    </div><br>
+    <div class="card">
+      <h2>Hue Tempo/Shift (<span id="tempo">%HUE_TEMPO%</span>/<span id="shift">%HUE_SHIFT%</span>)</h2> 
+      <p><input type="range" style="width: 280px" min="0" max="10" id="hueTempo" name="hueTempo" value="%HUE_TEMPO%"></p>
     </div>
   </div>
 <script>
@@ -105,6 +109,14 @@ const char index_html[] PROGMEM = R"rawliteral(
       break;
     case "brightness":  
       document.getElementById('brightness').value = message.value;
+      document.getElementById('brightness_pc').innerHTML = message.value;
+      break;
+    case "hueTempo":  
+      document.getElementById('hueTempo').value = message.value;
+      document.getElementById('tempo').innerHTML = message.value;
+      break;
+    case "hueShift":  
+      document.getElementById('shift').innerHTML = message.value;
       break;
     default:
       console.log('Web Socket message key not recognised');
@@ -119,6 +131,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     document.getElementById('pattern').addEventListener('change', selectPattern);
     document.getElementById('palette').addEventListener('change', selectPalette);
     document.getElementById('brightness').addEventListener('change', rangeBrightness);
+    document.getElementById('hueTempo').addEventListener('change', rangeHueTempo);
   }
   
   function selectPattern(){ 
@@ -127,7 +140,9 @@ const char index_html[] PROGMEM = R"rawliteral(
     console.log(document.getElementById('pattern').selectedIndex);
     console.log(message);
     websocket.send(message);
-    document.getElementById('palette').selectedIndex = document.getElementById('pattern').selectedIndex;    
+    document.getElementById('palette').selectedIndex = document.getElementById('pattern').selectedIndex;   
+    console.log(document.getElementById('palette').selectedIndex); 
+    selectPalette();
   }
 
   function selectPalette(){
@@ -140,8 +155,15 @@ const char index_html[] PROGMEM = R"rawliteral(
 
   function rangeBrightness(){
     var message = '{"key":"brightness", "value":' + document.getElementById('brightness').value + '}';
-    console.log('Sending Brightness Index');
+    console.log('Sending Brightness');
     console.log(document.getElementById('brightness').value);
+    console.log(message);
+    websocket.send(message);
+  }
+  function rangeHueTempo(){
+    var message = '{"key":"hueTempo", "value":' + document.getElementById('hueTempo').value + '}';
+    console.log('Sending Hue Tempo');
+    console.log(document.getElementById('hueTempo').value);
     console.log(message);
     websocket.send(message);
   }
@@ -165,23 +187,29 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     Serial.println(message);
     DeserializationError error = deserializeJson(doc, message);
     
-    if (doc["key"] = "pattern"){
+    if (doc["key"] == "pattern"){
       patternIndex = (int)doc["value"];
       Serial.print("patternIndex: ");
       Serial.println(patternIndex);
-      String message = "{key:\"pattern\", value:" + (String)patternIndex + "}";
+      String message = "{\"key\":\"pattern\", \"value\":" + (String)patternIndex + "}";
     }
-    if (doc["key"] = "palette"){
+    if (doc["key"] == "palette"){
       paletteIndex = (int)doc["value"];
       Serial.print("paletteIndex: ");
       Serial.println(paletteIndex);
-      String message = "{key:\"palette\", value:" + (String)patternIndex + "}";
+      String message = "{\"key\":\"palette\", \"value\":" + (String)patternIndex + "}";
     }
-    if (doc["key"] = "brightness"){
+    if (doc["key"] == "brightness"){
       g_brightness = (int)doc["value"];
       Serial.print("brightness: ");
       Serial.println(g_brightness);
-      String message = "{key:\"brightness\", value:" + (String)g_brightness + "}";
+      String message = "{\"key\":\"brightness\", \"value\":" + (String)g_brightness + "}";
+    }
+    if (doc["key"] == "hueTempo"){
+      g_hueTempo = (int)doc["value"];
+      Serial.print("hueTempo: ");
+      Serial.println(g_hueTempo);
+      String message = "{\"key\":\"hueTempo\", \"value\":" + (String)g_hueTempo + "}";
     }
     notifyClients(message);
   }
@@ -240,5 +268,16 @@ String processor(const String& var){
   if (var=="BRIGHTNESS") {
     Serial.println(g_brightness);
     return (String)g_brightness;
-  }        
+  }  
+  if (var=="BRIGHTNESS_TEXT") {
+    return (String)g_brightness;
+  }   
+     
+  if (var=="HUE_TEMPO") {
+    Serial.println(g_hueTempo);
+    return (String)g_hueTempo;
+  }  
+  if (var=="HUE_SHIFT") {
+    return (String)g_hueShift;
+  }      
 }
